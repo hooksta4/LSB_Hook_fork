@@ -12,10 +12,10 @@ require('scripts/globals/interaction/quest')
 
 local quest = Quest:new(xi.quest.log_id.WINDURST, xi.quest.id.windurst.CREEPY_CRAWLIES)
 
-quest.reward =
+quest.reward = -- removed gil reward due to CS having message: using gil = 600 would double the message.
 {
     title = xi.title.CRAWLER_CULLER,
-    famre = 30,
+    fame = 30,
 }
 
 quest.sections =
@@ -54,7 +54,7 @@ quest.sections =
                         npcUtil.tradeHas(trade, { { xi.items.SPOOL_OF_SILK_THREAD, 3 } }) or
                         npcUtil.tradeHas(trade, { { xi.items.CRAWLER_CALCULUS, 3 } })
                     then
-                        return quest:event(335, 600, xi.items.SPOOL_OF_SILK_THREAD, 0, xi.items.CRAWLER_CALCULUS)
+                        return quest:event(335, 600 * xi.settings.main.GIL_RATE, xi.items.SPOOL_OF_SILK_THREAD, 0, xi.items.CRAWLER_CALCULUS)
                     end
                 end,
 
@@ -66,7 +66,7 @@ quest.sections =
                 [335] = function(player, csid, option, npc)
                     if quest:complete(player) then
                         player:confirmTrade()
-                        player:addGil(600 * xi.settings.main.GIL_RATE) -- moved from reward section due to csis string ID#6549 included message special for gil
+                        player:addGil(600 * xi.settings.main.GIL_RATE) -- moved from reward section due to csid string ID#6549 included message special for gil
                     end
                 end,
             },
@@ -89,11 +89,17 @@ quest.sections =
                         npcUtil.tradeHas(trade, { { xi.items.SPOOL_OF_SILK_THREAD, 3 } }) or
                         npcUtil.tradeHas(trade, { { xi.items.CRAWLER_CALCULUS, 3 } })
                     then
-                        player:addFame(xi.quest.fame_area.WINDURST, 15)
-                        player:confirmTrade()
-                        player:addGil(600 * xi.settings.main.GIL_RATE) -- moved from reward section due to csis string ID#6549 included message special for gil
-                        return quest:event(335, 600, xi.items.SPOOL_OF_SILK_THREAD, 0, xi.items.CRAWLER_CALCULUS)
+                        return quest:event(335, 600 * xi.settings.main.GIL_RATE, xi.items.SPOOL_OF_SILK_THREAD, 0, xi.items.CRAWLER_CALCULUS)
                     end
+                end,
+            },
+
+            onEventFinish =
+            {
+                [335] = function(player, csid, option, npc)
+                    player:confirmTrade()
+                    player:addFame(xi.quest.fame_area.WINDURST, 15)
+                    player:addGil(600 * xi.settings.main.GIL_RATE) -- moved from reward section due to csid string ID#6549 included message special for gil
                 end,
             },
         },
