@@ -5,7 +5,6 @@
 -- Starts Dances with Luopans
 -- !pos 78.094 32.000 135.725
 -----------------------------------
-require("scripts/globals/items")
 require("scripts/globals/npc_util")
 require("scripts/globals/quests")
 local ID = require("scripts/zones/Western_Adoulin/IDs")
@@ -58,7 +57,7 @@ entity.onTrigger = function(player, npc)
     end
 end
 
-entity.onEventUpdate = function(player, csid, option)
+entity.onEventUpdate = function(player, csid, option, npc)
     -- Buying a replacement Matre Bell on Geomancer
     if csid == 37 and (option == 1 or option == 2) then
         local eventUpdateParam = 0  -- 0 = can't afford, 1 = success, 2 = full inventory
@@ -76,7 +75,7 @@ entity.onEventUpdate = function(player, csid, option)
     end
 end
 
-entity.onEventFinish = function(player, csid, option)
+entity.onEventFinish = function(player, csid, option, npc)
     -- DANCES WITH LUOPANS
     if csid == 31 or csid == 32 then
         if option == 0 then

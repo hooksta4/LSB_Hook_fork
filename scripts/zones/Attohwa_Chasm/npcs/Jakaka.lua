@@ -10,7 +10,10 @@ local entity = {}
 
 entity.onTrade = function(player, npc, trade)
     -- Trade Parradamo Stones
-    if trade:hasItemQty(1778, 1) and trade:getItemCount() == 1 then
+    if
+        trade:hasItemQty(xi.items.POUCH_OF_PARRADAMO_STONES, 1) and
+        trade:getItemCount() == 1
+    then
         player:tradeComplete()
         player:startEvent(12)
     end
@@ -26,7 +29,10 @@ entity.onTrigger = function(player, npc)
             -- Both Vanadiel time and unix timestamps are based on seconds. Add the difference to the event.
             player:startEvent(14, VanadielTime() + (miasmaFilterCD - os.time()))
         else
-            if player:hasItem(1778) or player:hasItem(1777) then -- Parradamo Stones, Flaxen Pouch
+            if
+                player:hasItem(xi.items.POUCH_OF_PARRADAMO_STONES) or
+                player:hasItem(xi.items.FLAXEN_POUCH)
+            then
                 player:startEvent(15)
             else
                 player:startEvent(13)
@@ -35,21 +41,21 @@ entity.onTrigger = function(player, npc)
     end
 end
 
-entity.onEventUpdate = function(player, csid, option)
+entity.onEventUpdate = function(player, csid, option, npc)
 end
 
-entity.onEventFinish = function(player, csid, option)
+entity.onEventFinish = function(player, csid, option, npc)
     if csid == 12 then
         player:addKeyItem(xi.ki.MIASMA_FILTER)
         player:messageSpecial(ID.text.KEYITEM_OBTAINED, xi.ki.MIASMA_FILTER)
         player:setCharVar("[ENM]MiasmaFilter", os.time() + (xi.settings.main.ENM_COOLDOWN * 3600)) -- Current time + (ENM_COOLDOWN*1hr in seconds)
     elseif csid == 13 then
         if player:getFreeSlotsCount() == 0 then
-            player:messageSpecial(ID.text.ITEM_CANNOT_BE_OBTAINED, 1777) -- Flaxen Pouch
+            player:messageSpecial(ID.text.ITEM_CANNOT_BE_OBTAINED, xi.items.FLAXEN_POUCH)
             return
         else
-            player:addItem(1777)
-            player:messageSpecial(ID.text.ITEM_OBTAINED, 1777) -- Flaxen Pouch
+            player:addItem(xi.items.FLAXEN_POUCH)
+            player:messageSpecial(ID.text.ITEM_OBTAINED, xi.items.FLAXEN_POUCH)
         end
     end
 end

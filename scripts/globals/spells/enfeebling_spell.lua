@@ -2,11 +2,10 @@
 -- Enfeebling Spell Utilities
 -- Used for spells that deal negative status effects upon targets.
 -----------------------------------
+require("scripts/globals/combat/element_tables")
 require("scripts/globals/combat/magic_hit_rate")
 require("scripts/globals/jobpoints")
 require("scripts/globals/magicburst")
-require("scripts/globals/msg")
-require("scripts/globals/spell_data")
 require("scripts/globals/utils")
 -----------------------------------
 xi = xi or {}
@@ -375,8 +374,12 @@ xi.spells.enfeebling.useEnfeeblingSpell = function(caster, target, spell)
     local resistStages = pTable[spellId][8]
     local message      = pTable[spellId][9]
     local bonusMacc    = pTable[spellId][12]
-    local resistRank   = target:getMod(xi.combat.magicHitRate.elementTable[spellElement][4]) or 0
-    local rankModifier = target:getMod(immunobreakTable[spellEffect][1]) or 0
+    local rankModifier = 0
+
+    -- Fetch immunobreak modifier to resistance rank if aplicable.
+    if immunobreakTable[spellEffect] then
+        rankModifier = target:getMod(immunobreakTable[spellEffect][1])
+    end
 
     -- Magic Hit Rate calculations.
     local magicAcc     = xi.combat.magicHitRate.calculateActorMagicAccuracy(caster, target, spellGroup, skillType, spellElement, statUsed, bonusMacc)
@@ -403,8 +406,15 @@ xi.spells.enfeebling.useEnfeeblingSpell = function(caster, target, spell)
 
     -- The effect will get resisted.
     if resistRate <= 1 / (2 ^ resistStages) then
-        -- Attempt immunobreak.
+        -- Attempt immunobreak. Fetch resistance rank modifier.
+        local resistRank = 0
+
+        if spellElement ~= xi.magic.ele.NONE then
+            resistRank = target:getMod(xi.combat.element.resistRankMod[spellElement])
+        end
+
         if
+            xi.settings.main.ENABLE_IMMUNOBREAK and
             caster:isPC() and
             target:isMob() and
             immunobreakTable[spellEffect] and          -- Only certain effects can be immunobroken.

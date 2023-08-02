@@ -2,7 +2,6 @@
 -- Rune Fencer Job Utilities
 -----------------------------------
 require("scripts/globals/ability")
-require("scripts/globals/msg")
 require("scripts/globals/weaponskills")
 require("scripts/globals/jobpoints")
 require("scripts/globals/spells/damage_spell")
@@ -303,7 +302,7 @@ xi.job_utils.rune_fencer.useSwordplay = function(player, target, ability)
         power = tickPower + player:getMod(xi.mod.SWORDPLAY)
     end
 
-    if power > 0 then -- add aug bonus if appropriate gear is equipped. Note: ilvl 109+ "relic" or "AF2" gear always has the augment, so no need to check extdata. RUN does not have AF/AF2/AF3 gear below i109.
+    if power > 0 then -- add aug bonus if appropriate gear is equipped. Note: ilvl 109+ "relic" or "AF2" gear always has the augment, so no need to check exdata. RUN does not have AF/AF2/AF3 gear below i109.
         augBonus = (meritBonus / 5) * 2
     end
 

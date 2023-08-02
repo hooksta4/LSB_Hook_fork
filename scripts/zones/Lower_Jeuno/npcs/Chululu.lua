@@ -6,7 +6,6 @@
 -- !pos -13 -6 -42 245
 -----------------------------------
 local ID = require("scripts/zones/Lower_Jeuno/IDs")
-require("scripts/globals/items")
 require("scripts/globals/titles")
 require("scripts/globals/shop")
 require("scripts/globals/quests")
@@ -104,10 +103,10 @@ entity.onTrigger = function(player, npc)
     end
 end
 
-entity.onEventUpdate = function(player, csid, option)
+entity.onEventUpdate = function(player, csid, option, npc)
 end
 
-entity.onEventFinish = function(player, csid, option)
+entity.onEventFinish = function(player, csid, option, npc)
     if csid == 28 and option == 0 then
         local rand = math.random(1, 4)
         local card = 0

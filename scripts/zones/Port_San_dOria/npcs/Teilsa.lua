@@ -10,7 +10,10 @@ local ID = require("scripts/zones/Port_San_dOria/IDs")
 local entity = {}
 
 entity.onTrade = function(player, npc, trade)
-    if trade:getItemCount() == 1 and trade:hasItemQty(536, 1) then
+    if
+        trade:getItemCount() == 1 and
+        trade:hasItemQty(xi.items.ADVENTURER_COUPON, 1)
+    then
         player:startEvent(612)
     end
 end
@@ -19,10 +22,10 @@ entity.onTrigger = function(player, npc)
     player:startEvent(573)
 end
 
-entity.onEventUpdate = function(player, csid, option)
+entity.onEventUpdate = function(player, csid, option, npc)
 end
 
-entity.onEventFinish = function(player, csid, option)
+entity.onEventFinish = function(player, csid, option, npc)
     if csid == 612 then
         player:tradeComplete()
 

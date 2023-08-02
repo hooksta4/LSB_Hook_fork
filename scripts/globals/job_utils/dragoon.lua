@@ -2,9 +2,7 @@
 -- Dragoon Job Utilities
 -----------------------------------
 require("scripts/globals/ability")
-require("scripts/globals/items")
 require("scripts/globals/jobpoints")
-require("scripts/globals/msg")
 require("scripts/globals/spells/damage_spell")
 require("scripts/globals/weaponskills")
 -----------------------------------

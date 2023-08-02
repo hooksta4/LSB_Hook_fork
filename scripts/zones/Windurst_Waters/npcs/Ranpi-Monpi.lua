@@ -18,10 +18,10 @@ entity.onTrade = function(player, npc, trade)
     -- In a Stew
     if IASvar == 3 then
         local count = trade:getItemCount()
-        if trade:hasItemQty(4373, 3) and count == 3 then
+        if trade:hasItemQty(xi.items.WOOZYSHROOM, 3) and count == 3 then
             player:startEvent(556) -- Correct items given, advance quest
         else
-            player:startEvent(555, 0, 4373) -- incorrect or not enough, play reminder dialog
+            player:startEvent(555, 0, xi.items.WOOZYSHROOM) -- incorrect or not enough, play reminder dialog
         end
     end
 end
@@ -33,9 +33,9 @@ entity.onTrigger = function(player, npc)
 
     -- In a Stew
     if IAS == QUEST_ACCEPTED and IASvar == 2 then
-        player:startEvent(554, 0, 4373)                    -- start fetch portion of quest
+        player:startEvent(554, 0, xi.items.WOOZYSHROOM)                    -- start fetch portion of quest
     elseif IAS == QUEST_ACCEPTED and IASvar == 3 then
-        player:startEvent(555, 0, 4373)                    -- reminder dialog
+        player:startEvent(555, 0, xi.items.WOOZYSHROOM)                    -- reminder dialog
     elseif IAS == QUEST_ACCEPTED and IASvar == 4 then
         player:startEvent(557)                             -- new dialog before finish of quest
 
@@ -86,10 +86,10 @@ entity.onTrigger = function(player, npc)
     end
 end
 
-entity.onEventUpdate = function(player, csid, option)
+entity.onEventUpdate = function(player, csid, option, npc)
 end
 
-entity.onEventFinish = function(player, csid, option)
+entity.onEventFinish = function(player, csid, option, npc)
     -- A Crisis in the Making
     if csid == 258 and option == 1 then  -- A Crisis in the Making + ITEM: Quest Offer - ACCEPTED
         player:addQuest(xi.quest.log_id.WINDURST, xi.quest.id.windurst.A_CRISIS_IN_THE_MAKING)

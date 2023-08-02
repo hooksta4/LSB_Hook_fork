@@ -45,9 +45,9 @@ local function getNumberOfCoinsToUpgradeSize(size)
 end
 
 entity.onTrade = function(player, npc, trade)
-    local numBronze = trade:getItemQty(2184)
-    local numMythril = trade:getItemQty(2186)
-    local numGold = trade:getItemQty(2187)
+    local numBronze = trade:getItemQty(xi.items.IMPERIAL_BRONZE_PIECE)
+    local numMythril = trade:getItemQty(xi.items.IMPERIAL_MYTHRIL_PIECE)
+    local numGold = trade:getItemQty(xi.items.IMPERIAL_GOLD_PIECE)
     if player:getCurrentMission(xi.mission.log_id.TOAU) >= xi.mission.id.toau.PRESIDENT_SALAHEEM then
         if numBronze > 0 and numMythril == 0 and numGold == 0 then
             if xi.moghouse.addMogLockerExpiryTime(player, numBronze) then
@@ -106,10 +106,10 @@ entity.onTrigger = function(player, npc)
     end
 end
 
-entity.onEventUpdate = function(player, csid, option)
+entity.onEventUpdate = function(player, csid, option, npc)
 end
 
-entity.onEventFinish = function(player, csid, option)
+entity.onEventFinish = function(player, csid, option, npc)
     if csid == 600 and option == 3 then
         local accessType = player:getCharVar(xi.moghouse.MOGLOCKER_PLAYERVAR_ACCESS_TYPE)
         if accessType == xi.moghouse.lockerAccessType.ALLAREAS then

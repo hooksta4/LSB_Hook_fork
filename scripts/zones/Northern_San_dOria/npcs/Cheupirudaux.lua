@@ -60,7 +60,7 @@ entity.onTrigger = function(player, npc)
 end
 
 -- 621  622  759  16  0
-entity.onEventUpdate = function(player, csid, option)
+entity.onEventUpdate = function(player, csid, option, npc)
     if
         csid == 621 and
         option >= xi.skill.WOODWORKING and
@@ -70,17 +70,17 @@ entity.onEventUpdate = function(player, csid, option)
     end
 end
 
-entity.onEventFinish = function(player, csid, option)
+entity.onEventFinish = function(player, csid, option, npc)
     if csid == 621 and option == 2 then
         if xi.crafting.hasJoinedGuild(player, xi.crafting.guild.WOODWORKING) then
             player:setCharVar("WoodworkingExpertQuest", 1)
         end
     elseif csid == 621 and option == 1 then
         if player:getFreeSlotsCount() == 0 then
-            player:messageSpecial(ID.text.ITEM_CANNOT_BE_OBTAINED, 4098)
+            player:messageSpecial(ID.text.ITEM_CANNOT_BE_OBTAINED, xi.items.WIND_CRYSTAL)
         else
-            player:addItem(4098)
-            player:messageSpecial(ID.text.ITEM_OBTAINED, 4098) -- Wind Crystal
+            player:addItem(xi.items.WIND_CRYSTAL)
+            player:messageSpecial(ID.text.ITEM_OBTAINED, xi.items.WIND_CRYSTAL) -- Wind Crystal
             xi.crafting.signupGuild(player, xi.crafting.guild.WOODWORKING)
         end
     else

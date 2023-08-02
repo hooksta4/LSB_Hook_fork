@@ -4,7 +4,6 @@
 -- Involved in Quest "The Pickpocket"
 -- !pos -624.231 -51.499 278.369 100
 -----------------------------------
------------------------------------
 local entity = {}
 
 entity.onTrigger = function(player, npc)
@@ -22,10 +21,10 @@ entity.onTrigger = function(player, npc)
     end
 end
 
-entity.onEventUpdate = function(player, csid, option)
+entity.onEventUpdate = function(player, csid, option, npc)
 end
 
-entity.onEventFinish = function(player, csid, option)
+entity.onEventFinish = function(player, csid, option, npc)
     -- CHASING QUOTAS
     if csid == 137 then
         player:setCharVar("ChasingQuotas_Progress", 5)

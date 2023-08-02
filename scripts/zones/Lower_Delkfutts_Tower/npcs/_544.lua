@@ -10,7 +10,7 @@ require("scripts/globals/npc_util")
 local entity = {}
 
 entity.onTrade = function(player, npc, trade)
-    if npcUtil.tradeHas(trade, 549) then -- Delkfutt Key
+    if npcUtil.tradeHas(trade, xi.items.DELKFUTT_KEY) then
         player:startOptionalCutscene(16)
     end
 end
@@ -23,7 +23,7 @@ entity.onTrigger = function(player, npc)
     end
 end
 
-entity.onEventUpdate = function(player, csid, option)
+entity.onEventUpdate = function(player, csid, option, npc)
 end
 
 entity.onEventFinish = function(player, csid, option, npc)

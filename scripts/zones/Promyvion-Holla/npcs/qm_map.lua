@@ -16,7 +16,7 @@ end
 
 entity.onTrade = function(player, npc, trade)
     if
-        npcUtil.tradeHas(trade, 1720) and
+        npcUtil.tradeHas(trade, xi.items.TEAL_MEMOSPHERE) and
         not player:hasKeyItem(xi.ki.MAP_OF_PROMYVION_HOLLA)
     then
         player:startEvent(49)
@@ -25,10 +25,10 @@ entity.onTrade = function(player, npc, trade)
     end
 end
 
-entity.onEventUpdate = function(player, csid, option)
+entity.onEventUpdate = function(player, csid, option, npc)
 end
 
-entity.onEventFinish = function(player, csid, option)
+entity.onEventFinish = function(player, csid, option, npc)
     if csid == 49 then
         player:confirmTrade()
         npcUtil.giveKeyItem(player, xi.ki.MAP_OF_PROMYVION_HOLLA)

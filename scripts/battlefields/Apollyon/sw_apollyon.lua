@@ -8,7 +8,6 @@
 local ID = require("scripts/zones/Apollyon/IDs")
 require("scripts/globals/battlefield")
 require("scripts/globals/limbus")
-require("scripts/globals/items")
 -----------------------------------
 
 local content = Limbus:new({
@@ -48,7 +47,7 @@ content.sections =
         {
             onEventFinish =
             {
-                [207] = function(player, csid, option)
+                [207] = function(player, csid, option, npc)
                     local battlefield = player:getBattlefield()
 
                     if battlefield:getLocalVar("weather") == 0 then

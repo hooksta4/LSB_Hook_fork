@@ -17,7 +17,7 @@ entity.onTrade = function(player, npc, trade)
         player:getQuestStatus(xi.quest.log_id.OUTLANDS, xi.quest.id.outlands.I_LL_TAKE_THE_BIG_BOX) == QUEST_ACCEPTED and
         player:getCharVar("illTakeTheBigBoxCS") == 2
     then
-        if trade:hasItemQty(17098, 1) and trade:getItemCount() == 1 then -- Trade Oak Pole
+        if trade:hasItemQty(xi.items.OAK_POLE, 1) and trade:getItemCount() == 1 then -- Trade Oak Pole
             player:startEvent(92)
         end
     end
@@ -56,10 +56,10 @@ entity.onTrigger = function(player, npc)
     end
 end
 
-entity.onEventUpdate = function(player, csid, option)
+entity.onEventUpdate = function(player, csid, option, npc)
 end
 
-entity.onEventFinish = function(player, csid, option)
+entity.onEventFinish = function(player, csid, option, npc)
     if csid == 90 then
         player:setCharVar("illTakeTheBigBoxCS", 2)
     elseif csid == 92 then

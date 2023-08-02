@@ -4,7 +4,6 @@
 -- Log ID: 3, Quest ID: 91
 -- Faursel : !pos 37.985 3.118 -45.208 245
 -----------------------------------
-require('scripts/globals/items')
 require('scripts/globals/npc_util')
 require('scripts/globals/quests')
 require('scripts/globals/teleports')
@@ -75,7 +74,7 @@ local advancedSingleList =
     xi.items.SCHOLARS_TESTIMONY,
 }
 
-local function handleEventUpdate(player, csid, option)
+local function handleEventUpdate(player, csid, option, npc)
     if option == 10 then
         player:updateEvent(537, 538, 539, 540, 541, 542, 0, 0)
     elseif option == 12 then
