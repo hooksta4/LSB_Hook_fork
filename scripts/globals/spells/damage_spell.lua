@@ -2,11 +2,11 @@
 -- Damage Spell Utilities
 -- Used for spells that deal direct damage. (Black, White, Dark and Ninjutsu)
 -----------------------------------
-require("scripts/globals/combat/element_tables")
-require("scripts/globals/combat/magic_hit_rate")
-require("scripts/globals/jobpoints")
-require("scripts/globals/magicburst")
-require("scripts/globals/utils")
+require('scripts/globals/combat/element_tables')
+require('scripts/globals/combat/magic_hit_rate')
+require('scripts/globals/jobpoints')
+require('scripts/globals/magicburst')
+require('scripts/globals/utils')
 -----------------------------------
 xi = xi or {}
 xi.spells = xi.spells or {}
@@ -336,7 +336,7 @@ xi.spells.damage.calculateSDT = function(target, spellElement)
     local sdt    = 1 -- The variable we want to calculate
     local sdtMod = 0
 
-    if spellElement > 0 then
+    if spellElement ~= xi.element.NONE then
         sdtMod = target:getMod(xi.combat.element.specificDmgTakenMod[spellElement])
 
     -- SDT (Species/Specific Damage Taken) is a stat/mod present in mobs and players that applies a % to specific damage types.
@@ -380,12 +380,12 @@ end
 
 xi.spells.damage.calculateIfMagicBurst = function(target, spellElement)
     local magicBurst         = 1 -- The variable we want to calculate
-    local _, skillchainCount = FormMagicBurst(spellElement, target) -- External function. Not present in magic.lua.
+    local _, skillchainCount = xi.magicburst.formMagicBurst(spellElement, target) -- External function. Not present in magic.lua.
 
     if skillchainCount > 0 then
         local rankBonus  = 0
 
-        if spellElement ~= xi.magic.ele.NONE then
+        if spellElement ~= xi.element.NONE then
             local resistRank = target:getMod(xi.combat.element.resistRankMod[spellElement])
             local rankTable  = { 1.15, 0.85, 0.6, 0.5, 0.4, 0.15, 0.05 }
 
@@ -408,7 +408,7 @@ xi.spells.damage.calculateIfMagicBurstBonus = function(caster, target, spellId, 
     local magicBurstBonus        = 1 -- The variable we want to calculate
     local modBurst               = 1
     local ancientMagicBurstBonus = 0
-    local _, skillchainCount     = FormMagicBurst(spellElement, target) -- External function. Not present in magic.lua.
+    local _, skillchainCount     = xi.magicburst.formMagicBurst(spellElement, target) -- External function. Not present in magic.lua.
 
     -- TODO: merge spellFamily and spell ID tables into one table in spell_data.lua, then maybe ad a family for all AM and use spellFamily here instead of spellID
     if spellId >= xi.magic.spell.FLARE and spellId <= xi.magic.spell.FLOOD_II then
@@ -565,8 +565,8 @@ xi.spells.damage.calculateMagicBonusDiff = function(caster, target, spellId, ski
 
     -- Bar Spells bonuses and BLM merits.
     if
-        spellElement >= xi.magic.element.FIRE and
-        spellElement <= xi.magic.element.WATER
+        spellElement >= xi.element.FIRE and
+        spellElement <= xi.element.WATER
     then
         mab = mab + caster:getMerit(xi.combat.element.blmMerit[spellElement])
 
@@ -750,7 +750,7 @@ xi.spells.damage.calculateNukeWallFactor = function(target, spellElement, finalD
     -- Initial check.
     if
         not target:isNM() or
-        spellElement <= 0 or
+        spellElement ~= xi.element.NONE or
         finalDamage < 0
     then
         return nukeWallFactor
@@ -886,7 +886,7 @@ xi.spells.damage.useDamageSpell = function(caster, target, spell)
         -- Add "Magic Burst!" message
         if magicBurst > 1 then
             spell:setMsg(xi.msg.basic.MAGIC_BURST_DAMAGE)
-            caster:triggerRoeEvent(xi.roe.triggers.magicBurst)
+            caster:triggerRoeEvent(xi.roeTrigger.MAGIC_BURST)
         end
     end
 

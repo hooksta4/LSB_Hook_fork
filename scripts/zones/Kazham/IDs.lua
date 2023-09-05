@@ -1,9 +1,6 @@
 -----------------------------------
 -- Area: Kazham
 -----------------------------------
-require("scripts/globals/zone")
------------------------------------
-
 zones = zones or {}
 
 zones[xi.zone.KAZHAM] =
@@ -46,6 +43,7 @@ zones[xi.zone.KAZHAM] =
     },
     npc =
     {
+        MAGRIFFON = GetFirstID('Magriffon'),
     },
 }
 

@@ -67,6 +67,7 @@
 #include "ai/states/ability_state.h"
 #include "ai/states/attack_state.h"
 #include "ai/states/death_state.h"
+#include "ai/states/despawn_state.h"
 #include "ai/states/inactive_state.h"
 #include "ai/states/item_state.h"
 #include "ai/states/magic_state.h"
@@ -1471,7 +1472,7 @@ void CLuaBaseEntity::setStatus(uint8 status)
  *  Purpose : Returns the current state of a non-NPC entity
  *  Example : if target:getCurrentAction() ~= xi.act.MOBABILITY_USING then
  *  Notes   : Function name ambiguous, but getCurrentState() in use already
- *          : See globals/status.lua for action definitions
+ *          : See scripts/enum/action.lua for action definitions
  ************************************************************************/
 
 uint8 CLuaBaseEntity::getCurrentAction()
@@ -1486,7 +1487,7 @@ uint8 CLuaBaseEntity::getCurrentAction()
 
     if (m_PBaseEntity->PAI->IsStateStackEmpty())
     {
-        action = 16;
+        action = 16; // For mobs, this means roaming
     }
     else if (m_PBaseEntity->PAI->IsCurrentState<CRespawnState>())
     {
@@ -1523,6 +1524,10 @@ uint8 CLuaBaseEntity::getCurrentAction()
     else if (m_PBaseEntity->PAI->IsCurrentState<CDeathState>())
     {
         action = 22;
+    }
+    else if (m_PBaseEntity->PAI->IsCurrentState<CDespawnState>())
+    {
+        action = 24;
     }
     else if (m_PBaseEntity->PAI->IsCurrentState<CRaiseState>())
     {
@@ -4501,19 +4506,25 @@ void CLuaBaseEntity::equipItem(uint16 itemID, sol::object const& container)
         return;
     }
 
-    auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
+    auto*           PChar             = static_cast<CCharEntity*>(m_PBaseEntity);
+    uint8           containerID       = container.is<uint8>() ? container.as<uint8>() : static_cast<uint8>(LOC_INVENTORY);
+    CItemContainer* PStorageContainer = PChar->getStorage(containerID);
 
-    uint8           containerID = (container != sol::lua_nil) ? container.as<uint8>() : (uint8)LOC_INVENTORY;
-    uint8           SLOT        = PChar->getStorage(containerID)->SearchItem(itemID);
-    CItemEquipment* PItem       = nullptr;
-
-    if (SLOT != ERROR_SLOTID)
+    if (PStorageContainer == nullptr)
     {
-        PItem = static_cast<CItemEquipment*>(PChar->getStorage(containerID)->GetItem(SLOT));
+        // getStorage logs for invalid, so just bail out here
+        return;
+    }
 
-        charutils::EquipItem(PChar, SLOT, PItem->getSlotType(), containerID);
-        charutils::SaveCharEquip(PChar);
-        charutils::SaveCharLook(PChar);
+    uint8 slotId = PChar->getStorage(containerID)->SearchItem(itemID);
+    if (slotId != ERROR_SLOTID)
+    {
+        if (auto* PItem = dynamic_cast<CItemEquipment*>(PChar->getStorage(containerID)->GetItem(slotId)))
+        {
+            charutils::EquipItem(PChar, slotId, PItem->getSlotType(), containerID);
+            charutils::SaveCharEquip(PChar);
+            charutils::SaveCharLook(PChar);
+        }
     }
 }
 
@@ -4889,8 +4900,15 @@ void CLuaBaseEntity::retrieveItemFromSlip(uint16 slipId, uint16 itemId, uint16 e
     sql->Query(Query, extra, PChar->id, slip->getLocationID(), slip->getSlotID());
 
     auto* item = itemutils::GetItem(itemId);
-    item->setQuantity(1);
-    charutils::AddItem(PChar, LOC_INVENTORY, item);
+    if (item)
+    {
+        item->setQuantity(1);
+        charutils::AddItem(PChar, LOC_INVENTORY, item);
+    }
+    else
+    {
+        ShowError("Failed to get item from item ID");
+    }
 }
 
 /************************************************************************
@@ -6749,7 +6767,6 @@ void CLuaBaseEntity::setRankPoints(uint16 rankPoints)
  *  Function: addQuest()
  *  Purpose : Adds a new quest to the character's in-progress quest log
  *  Example : player:addQuest(xi.quest.log_id.BASTOK, xi.quest.id.bastok.LURE_OF_THE_WILDCAT)
- *  Notes   :
  ************************************************************************/
 
 void CLuaBaseEntity::addQuest(uint8 questLogID, uint16 questID)
@@ -6764,10 +6781,9 @@ void CLuaBaseEntity::addQuest(uint8 questLogID, uint16 questID)
 
     if (questLogID < MAX_QUESTAREA && questID < MAX_QUESTID)
     {
-        uint8 current  = PChar->m_questLog[questLogID].current[questID / 8] & (1 << (questID % 8));
-        uint8 complete = PChar->m_questLog[questLogID].complete[questID / 8] & (1 << (questID % 8));
+        uint8 current = PChar->m_questLog[questLogID].current[questID / 8] & (1 << (questID % 8));
 
-        if ((current == 0) && (complete == 0))
+        if (current == 0)
         {
             PChar->m_questLog[questLogID].current[questID / 8] |= (1 << (questID % 8));
             PChar->pushPacket(new CQuestMissionLogPacket(PChar, questLogID, LOG_QUEST_CURRENT));
@@ -6782,8 +6798,44 @@ void CLuaBaseEntity::addQuest(uint8 questLogID, uint16 questID)
 }
 
 /************************************************************************
+ *  Function: delCurrentQuest()
+ *  Purpose : Deletes an accepted quest for the player, but does not remove Completed state
+ *  Notes   : This duplicates delQuest with the above exception
+ ************************************************************************/
+
+void CLuaBaseEntity::delCurrentQuest(uint8 questLogID, uint16 questID)
+{
+    if (m_PBaseEntity->objtype != TYPE_PC)
+    {
+        ShowWarning("Invalid entity type calling function (%s).", m_PBaseEntity->GetName());
+        return;
+    }
+
+    auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
+
+    if (questLogID < MAX_QUESTAREA && questID < MAX_QUESTID)
+    {
+        uint8 current = PChar->m_questLog[questLogID].current[questID / 8] & (1 << (questID % 8));
+
+        if (current != 0)
+        {
+            PChar->m_questLog[questLogID].current[questID / 8] &= ~(1 << (questID % 8));
+
+            PChar->pushPacket(new CQuestMissionLogPacket(PChar, questLogID, LOG_QUEST_CURRENT));
+            PChar->pushPacket(new CQuestMissionLogPacket(PChar, questLogID, LOG_QUEST_COMPLETE));
+
+            charutils::SaveQuestsList(PChar);
+        }
+    }
+    else
+    {
+        ShowError("Lua::delCurrentQuest: questLogID %i or QuestID %i is invalid", questLogID, questID);
+    }
+}
+
+/************************************************************************
  *  Function: delQuest()
- *  Purpose : Deletes a quest from a character's quest log
+ *  Purpose : Deletes all records of a quest from a character's quest log
  *  Example : player:delQuest(xi.quest.log_id.WINDURST, xi.quest.id.windurst.LURE_OF_THE_WILDCAT)
  *  Notes   : Doesn't delete any player variables associated with quest
  ************************************************************************/
@@ -7567,6 +7619,80 @@ void CLuaBaseEntity::resetClaimedDeeds()
 
     sql->EscapeStringLen(buf, (const char*)&PChar->m_claimedDeeds, sizeof(PChar->m_claimedDeeds));
     sql->Query(query, buf, PChar->id);
+}
+
+/************************************************************************
+ *  Function: setUniqueEvent()
+ *  Purpose : Sets and saves unique event tracking value into database
+ *  Example : player:setUniqueEvent(xi.uniqueEvent.TUCKER_INTRO_DIALOGUE)
+ ************************************************************************/
+void CLuaBaseEntity::setUniqueEvent(uint16 uniqueEventId)
+{
+    if (m_PBaseEntity->objtype != TYPE_PC)
+    {
+        ShowWarning("Attempt to set Unique Event mask for Non-PC.");
+        return;
+    }
+
+    auto* PChar  = static_cast<CCharEntity*>(m_PBaseEntity);
+    uint8 index  = uniqueEventId / 32;
+    uint8 setBit = uniqueEventId % 32;
+
+    PChar->m_uniqueEvents[index] |= (1 << setBit);
+
+    const char* query = "UPDATE char_unlocks SET unique_event = '%s' WHERE charid = %u;";
+    char        buf[sizeof(PChar->m_uniqueEvents) * 2 + 1];
+
+    sql->EscapeStringLen(buf, (const char*)&PChar->m_uniqueEvents, sizeof(PChar->m_uniqueEvents));
+    sql->Query(query, buf, PChar->id);
+}
+
+/************************************************************************
+ *  Function: delUniqueEvent()
+ *  Purpose : Removes and saves unique event tracking value into database
+ *  Example : player:delUniqueEvent(xi.uniqueEvent.TUCKER_INTRO_DIALOGUE)
+ *  NOTE    : This should never be used outside of debugging!
+ ************************************************************************/
+void CLuaBaseEntity::delUniqueEvent(uint16 uniqueEventId)
+{
+    if (m_PBaseEntity->objtype != TYPE_PC)
+    {
+        ShowWarning("Attempt to del from Unique Event mask for Non-PC.");
+        return;
+    }
+
+    auto* PChar  = static_cast<CCharEntity*>(m_PBaseEntity);
+    uint8 index  = uniqueEventId / 32;
+    uint8 setBit = uniqueEventId % 32;
+
+    PChar->m_uniqueEvents[index] &= ~(1 << setBit);
+
+    const char* query = "UPDATE char_unlocks SET unique_event = '%s' WHERE charid = %u;";
+    char        buf[sizeof(PChar->m_uniqueEvents) * 2 + 1];
+
+    sql->EscapeStringLen(buf, (const char*)&PChar->m_uniqueEvents, sizeof(PChar->m_uniqueEvents));
+    sql->Query(query, buf, PChar->id);
+}
+
+/************************************************************************
+ *  Function: hasCompletedUniqueEvent()
+ *  Purpose : Returns true if the player has seen his event before
+ *  Example : if player:hasUniqueEvent(xi.uniqueEvent.TUCKER_INTRO_DIALOGUE) then
+ *  NOTE    : This should never be used outside of debugging!
+ ************************************************************************/
+bool CLuaBaseEntity::hasCompletedUniqueEvent(uint16 uniqueEventId)
+{
+    if (m_PBaseEntity->objtype != TYPE_PC)
+    {
+        ShowWarning("Attempt to compare Unique Event mask for Non-PC.");
+        return false;
+    }
+
+    auto* PChar  = static_cast<CCharEntity*>(m_PBaseEntity);
+    uint8 index  = uniqueEventId / 32;
+    uint8 setBit = uniqueEventId % 32;
+
+    return PChar->m_uniqueEvents[index] & (1 << setBit);
 }
 
 /************************************************************************
@@ -10162,7 +10288,7 @@ void CLuaBaseEntity::reloadParty()
  *  Function: disableLevelSync()
  *  Purpose : Disables...wait for it...Level Sync
  *  Example : target:disableLevelSync()
- *  Notes   : Only used in scripts/globals/effects/level_sync.lua
+ *  Notes   : Only used in scripts/effects/level_sync.lua
  ************************************************************************/
 
 void CLuaBaseEntity::disableLevelSync()
@@ -10929,7 +11055,7 @@ void CLuaBaseEntity::timer(int ms, sol::function func)
  *  Example :
  *  Notes   : For instance, Sic can be used before a Pet reaches 100% TP.
  *          : Once the Pet reaches 100%, it will use it's Special Ability.
- *          : See scripts/globals/abilities/sic.lua for how the Special
+ *          : See scripts/actions/abilities/sic.lua for how the Special
  *          : Ability is delayed until 100% (essentially loops into Action Queue)
  ************************************************************************/
 
@@ -11165,7 +11291,7 @@ uint16 CLuaBaseEntity::getBattleID()
  *  Function: recalculateStats()
  *  Purpose : Recalculate the total Stats for a PC (force update)
  *  Example : target:recalculateStats()
- *  Notes   : See scripts/globals/effects/obliviscence.lua
+ *  Notes   : See scripts/effects/obliviscence.lua
  ************************************************************************/
 
 void CLuaBaseEntity::recalculateStats()
@@ -11550,7 +11676,7 @@ void CLuaBaseEntity::updateEnmity(CLuaBaseEntity* PEntity)
  *  Function: transferEnmity()
  *  Purpose : Used to transfer an amount of Enmity from one Entity to another
  *  Example : target:transferEnmity(player, 50, 20.6)
- *  Notes   : See scripts/globals/abilities/accomplice.lua
+ *  Notes   : See scripts/actions/abilities/accomplice.lua
  ************************************************************************/
 
 void CLuaBaseEntity::transferEnmity(CLuaBaseEntity* entity, uint8 percent, float range)
@@ -12754,7 +12880,7 @@ uint8 CLuaBaseEntity::getOverloadChance(uint8 element)
  *  Function: setStatDebilitation()
  *  Purpose : Updates the private member m_StatsDebilitation in CCharEntity
  *  Example : target:setStatDebilitation(power)
- *  Notes   : Used only through scripts/globals/effects/debilitation.lua
+ *  Notes   : Used only through scripts/effects/debilitation.lua
  ************************************************************************/
 
 void CLuaBaseEntity::setStatDebilitation(uint16 statDebil)
@@ -14416,6 +14542,61 @@ void CLuaBaseEntity::removeAllManeuvers()
 }
 
 /************************************************************************
+ *  Function: getAttachment(slotId)
+ *  Purpose : Gets the attachment of an automaton in the slot specified
+ *  Example : pet:getAttachment(1)
+ ************************************************************************/
+
+std::optional<CLuaItem> CLuaBaseEntity::getAttachment(uint8 slotId)
+{
+    auto* PAutomaton = dynamic_cast<CAutomatonEntity*>(m_PBaseEntity);
+
+    if (PAutomaton == nullptr)
+    {
+        ShowWarning("Invalid Entity accessing function.");
+        return std::nullopt;
+    }
+
+    uint8 slotItem = PAutomaton->getAttachment(slotId);
+    if (slotItem != 0)
+    {
+        return CLuaItem(itemutils::GetItemPointer(0x2100 + slotItem)); // TODO: Stop storing by offset
+    }
+
+    return std::nullopt;
+}
+
+/************************************************************************
+ *  Function: getAttachments()
+ *  Purpose : Returns a table of attachment items equipped by an Automaton
+ *  Example : pet:getAttachments()
+ ************************************************************************/
+
+sol::table CLuaBaseEntity::getAttachments()
+{
+    auto* PAutomaton = dynamic_cast<CAutomatonEntity*>(m_PBaseEntity);
+
+    if (PAutomaton == nullptr)
+    {
+        ShowWarning("Invalid Entity accessing function.");
+        return sol::lua_nil;
+    }
+
+    auto attachmentTable = lua.create_table();
+    for (uint8 attachmentSlot = 0; attachmentSlot < 12; ++attachmentSlot)
+    {
+        uint8 attachmentItemId = PAutomaton->getAttachment(attachmentSlot);
+
+        if (attachmentItemId != 0)
+        {
+            attachmentTable[attachmentSlot] = CLuaItem(itemutils::GetItemPointer(0x2100 + attachmentItemId));
+        }
+    }
+
+    return attachmentTable;
+}
+
+/************************************************************************
  *  Function: updateAttachments()
  *  Purpose : Updates all of the attachments
  *  Example : master:updateAttachments()
@@ -15919,7 +16100,7 @@ void CLuaBaseEntity::restoreFromChest(CLuaBaseEntity* PLuaBaseEntity, uint32 res
  *  Function: hasPreventActionEffect()
  *  Purpose : Returns true if a non-NPC entity has a preventative status effect
  *  Example : if not pet:hasPreventActionEffect() then
- *  Notes   : Used in scripts/globals/abilities/stay.lua
+ *  Notes   : Used in scripts/actions/abilities/stay.lua
  ************************************************************************/
 
 bool CLuaBaseEntity::hasPreventActionEffect()
@@ -16152,7 +16333,7 @@ uint16 CLuaBaseEntity::getDespoilDebuff(uint16 itemID)
  *  Function: itemStolen()
  *  Purpose : Flags a mob's item as stolen, returns true upon update
  *  Example : target:itemStolen()
- *  Notes   : Used in scripts/globals/abilities/steal.lua
+ *  Notes   : Used in scripts/actions/abilities/steal.lua
  ************************************************************************/
 
 bool CLuaBaseEntity::itemStolen()
@@ -16913,6 +17094,7 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("setRankPoints", CLuaBaseEntity::setRankPoints);
 
     SOL_REGISTER("addQuest", CLuaBaseEntity::addQuest);
+    SOL_REGISTER("delCurrentQuest", CLuaBaseEntity::delCurrentQuest);
     SOL_REGISTER("delQuest", CLuaBaseEntity::delQuest);
     SOL_REGISTER("getQuestStatus", CLuaBaseEntity::getQuestStatus);
     SOL_REGISTER("hasCompletedQuest", CLuaBaseEntity::hasCompletedQuest);
@@ -16939,6 +17121,10 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("toggleReceivedDeedRewards", CLuaBaseEntity::toggleReceivedDeedRewards);
     SOL_REGISTER("setClaimedDeed", CLuaBaseEntity::setClaimedDeed);
     SOL_REGISTER("resetClaimedDeeds", CLuaBaseEntity::resetClaimedDeeds);
+
+    SOL_REGISTER("setUniqueEvent", CLuaBaseEntity::setUniqueEvent);
+    SOL_REGISTER("delUniqueEvent", CLuaBaseEntity::delUniqueEvent);
+    SOL_REGISTER("hasCompletedUniqueEvent", CLuaBaseEntity::hasCompletedUniqueEvent);
 
     SOL_REGISTER("addAssault", CLuaBaseEntity::addAssault);
     SOL_REGISTER("delAssault", CLuaBaseEntity::delAssault);
@@ -17294,6 +17480,8 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("getActiveManeuverCount", CLuaBaseEntity::getActiveManeuverCount);
     SOL_REGISTER("removeOldestManeuver", CLuaBaseEntity::removeOldestManeuver);
     SOL_REGISTER("removeAllManeuvers", CLuaBaseEntity::removeAllManeuvers);
+    SOL_REGISTER("getAttachment", CLuaBaseEntity::getAttachment);
+    SOL_REGISTER("getAttachments", CLuaBaseEntity::getAttachments);
     SOL_REGISTER("updateAttachments", CLuaBaseEntity::updateAttachments);
     SOL_REGISTER("reduceBurden", CLuaBaseEntity::reduceBurden);
 

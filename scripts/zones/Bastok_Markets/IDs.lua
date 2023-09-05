@@ -1,9 +1,6 @@
 -----------------------------------
 -- Area: Bastok_Markets
 -----------------------------------
-require("scripts/globals/zone")
------------------------------------
-
 zones = zones or {}
 
 zones[xi.zone.BASTOK_MARKETS] =
@@ -84,7 +81,7 @@ zones[xi.zone.BASTOK_MARKETS] =
     },
     npc =
     {
-        AQUILLINA = GetFirstID("Aquillina"),
+        AQUILLINA = GetFirstID('Aquillina'),
 
         HALLOWEEN_SKINS =
         {

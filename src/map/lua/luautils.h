@@ -130,7 +130,8 @@ namespace luautils
     auto GetCacheEntryFromFilename(std::string const& filename) -> sol::table;
     void OnEntityLoad(CBaseEntity* PEntity);
 
-    void PopulateIDLookups(std::optional<uint16> maybeZoneId = std::nullopt);
+    void PopulateIDLookupsByFilename(std::optional<std::string> maybeFilename = std::nullopt);
+    void PopulateIDLookupsByZone(std::optional<uint16> maybeZoneId = std::nullopt);
 
     void SendEntityVisualPacket(uint32 npcid, const char* command);
     void InitInteractionGlobal();
@@ -209,7 +210,7 @@ namespace luautils
     int32 OnTriggerAreaLeave(CCharEntity* PChar, CTriggerArea* PTriggerArea); // when player leaves a trigger area in a zone
     int32 OnTransportEvent(CCharEntity* PChar, uint32 TransportID);
     void  OnTimeTrigger(CNpcEntity* PNpc, uint8 triggerID);
-    int32 OnConquestUpdate(CZone* PZone, ConquestUpdate type, uint8 influence, uint8 owner, uint8 ranking, bool isConquestAlliance); // hourly conquest update
+    int32 OnConquestUpdate(CZone* PZone, ConquestUpdate type, uint8 influence, uint8 owner, uint8 ranking, bool isConquestAlliance); // conquest update (hourly or tally)
 
     void OnServerStart();
     void OnJSTMidnight();

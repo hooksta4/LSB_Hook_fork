@@ -7,11 +7,6 @@
 -- Kagetora : !pos -96 -2 29 236
 -- Alois    : !pos 96 -20 14 237
 -----------------------------------
-require('scripts/globals/npc_util')
-require('scripts/globals/quests')
-require('scripts/globals/zone')
-require('scripts/globals/interaction/quest')
------------------------------------
 
 local quest = Quest:new(xi.quest.log_id.BASTOK, xi.quest.id.bastok.FADED_PROMISES)
 
@@ -19,7 +14,7 @@ quest.reward =
 {
     fame     = 10,
     fameArea = xi.quest.fame_area.BASTOK,
-    item     = xi.items.FUKURO,
+    item     = xi.item.FUKURO,
     title    = xi.title.ASSASSIN_REJECT,
 }
 
@@ -78,7 +73,8 @@ quest.sections =
             onEventFinish =
             {
                 [803] = function(player, csid, option, npc)
-                    if option == 1 then
+                    -- This event uses a very big number for cancelation, making the capture suite wrongly return 0.
+                    if option == 0 then
                         quest:setVar(player, 'Prog', 1)
                     end
                 end,
