@@ -21,6 +21,8 @@ zones[xi.zone.KING_RANPERRES_TOMB] =
         CHEST_UNLOCKED                = 7291,  -- You unlock the chest!
         SENSE_SOMETHING_EVIL          = 7318,  -- You sense something evil.
         HEAVY_DOOR                    = 7319,  -- It is a solid stone door.
+        A_TOMB                        = 7322,  -- It appears to a tomb.
+        FINAL_RESTING_PLACE           = 7323,  -- It appears to be the true resting place of King Ranperre.
         PLAYER_OBTAINS_ITEM           = 8257,  -- <name> obtains <item>!
         UNABLE_TO_OBTAIN_ITEM         = 8258,  -- You were unable to obtain the item.
         PLAYER_OBTAINS_TEMP_ITEM      = 8259,  -- <name> obtains the temporary item: <item>!
@@ -41,12 +43,12 @@ zones[xi.zone.KING_RANPERRES_TOMB] =
             [17555666] = 17555668,
             [17555667] = 17555668,
         },
+        CORRUPTED_YORGOS      = GetFirstID('Corrupted_Yorgos'),
+        CORRUPTED_SOFFEIL     = GetFirstID('Corrupted_Soffeil'),
+        CORRUPTED_ULBRIG      = GetFirstID('Corrupted_Ulbrig'),
         BARBASTELLE           = 17555721,
         CHERRY_SAPLING_OFFSET = 17555748,
         VRTRA                 = 17555763,
-        CORRUPTED_YORGOS      = 17555770,
-        CORRUPTED_SOFFEIL     = 17555771,
-        CORRUPTED_ULBRIG      = 17555772,
         ANKOU                 = 17555709,
     },
     npc =
