@@ -9,7 +9,6 @@ local ID = zones[xi.zone.THRONE_ROOM]
 local content = BattlefieldMission:new({
     zoneId        = xi.zone.THRONE_ROOM,
     battlefieldId = xi.battlefield.id.SHADOW_LORD_BATTLE,
-    isMission     = true,
     maxPlayers    = 6,
     levelCap      = 75,
     timeLimit     = utils.minutes(30),
