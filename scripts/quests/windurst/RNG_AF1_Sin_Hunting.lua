@@ -155,7 +155,7 @@ quest.sections =
             ['Perih_Vashai'] =
             {
                 onTrigger = function(player, npc)
-                    if player:getQuestStatus(xi.quest.log_id.WINDURST, xi.quest.id.windurst.FIRE_AND_BRIMSTONE) == xi.questStatus.QUEST_AVAILABLE then
+                    if player:getQuestStatus(xi.questLog.WINDURST, xi.quest.id.windurst.FIRE_AND_BRIMSTONE) == xi.questStatus.QUEST_AVAILABLE then
                         return quest:event(528):replaceDefault()--dialog changes after each quest in the series is completed.
                     end
                 end,

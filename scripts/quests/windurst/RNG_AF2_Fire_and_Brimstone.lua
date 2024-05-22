@@ -188,7 +188,7 @@ quest.sections =
             ['Perih_Vashai'] =
             {
                 onTrigger = function(player, npc)
-                    if player:getQuestStatus(xi.quest.log_id.WINDURST, xi.quest.id.windurst.UNBRIDLED_PASSION) == xi.questStatus.QUEST_AVAILABLE then
+                    if player:getQuestStatus(xi.questLog.WINDURST, xi.quest.id.windurst.UNBRIDLED_PASSION) == xi.questStatus.QUEST_AVAILABLE then
                         return quest:progressEvent(538):replaceDefault()
                     end
                 end,
@@ -197,7 +197,7 @@ quest.sections =
             ['Muhk_Johldy'] =
             {
                 onTrigger = function(player, npc)
-                    if player:getQuestStatus(xi.quest.log_id.WINDURST, xi.quest.id.windurst.UNBRIDLED_PASSION) == xi.questStatus.QUEST_AVAILABLE then
+                    if player:getQuestStatus(xi.questLog.WINDURST, xi.quest.id.windurst.UNBRIDLED_PASSION) == xi.questStatus.QUEST_AVAILABLE then
                         return quest:progressEvent(539):replaceDefault()
                     end
                 end,
