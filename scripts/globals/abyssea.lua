@@ -1145,8 +1145,9 @@ end
 -- Zone Global Functions
 -----------------------------------
 xi.abyssea.onZoneIn = function(player)
-    -- If the player is a GM, and has GM toggled active, give them permanent visitant status.
-    if player:getGMLevel() > 0 and player:getVisibleGMLevel() >= 3 then
+    -- If the player is a GM, and has GM toggled active, give them permanent visitant
+    -- status.  TODO: nameFlags enum
+    if player:getGMLevel() > 0 and player:checkNameFlags(0x04000000) then
         player:addStatusEffectEx(xi.effect.VISITANT, xi.effect.VISITANT, 0, 0, 0)
     end
 end

@@ -61,10 +61,7 @@ entity.onTrigger = function(player, npc)
     elseif quotasProgress == 6 then
         player:startEvent(15) -- End of AF2
 
-    elseif
-        quotasStatus == xi.questStatus.QUEST_COMPLETED and
-        stalkerStatus == xi.questStatus.QUEST_AVAILABLE
-    then
+    elseif quotasStatus == xi.questStatus.QUEST_COMPLETED and stalkerStatus == xi.questStatus.QUEST_AVAILABLE then
         player:startEvent(16) -- Fluff text until DRG AF3
 
     -- Knight Stalker (DRG AF3)
@@ -116,7 +113,7 @@ entity.onEventFinish = function(player, csid, option, npc)
             player:delKeyItem(xi.ki.RANCHURIOMES_LEGACY)
             player:addItem(xi.item.DRACHEN_BRAIS)
             player:messageSpecial(ID.text.ITEM_OBTAINED, xi.item.DRACHEN_BRAIS) -- Drachen Brais
-            player:addFame(xi.fameArea.SANDORIA, 40)
+            player:addFame(xi.quest.fame_area.SANDORIA, 40)
             player:completeQuest(xi.questLog.SANDORIA, xi.quest.id.sandoria.CHASING_QUOTAS)
             player:setCharVar('ChasingQuotas_Progress', 0)
         end

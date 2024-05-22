@@ -17,13 +17,10 @@ entity.onTrigger = function(player, npc)
 
     if
         troubleAtTheSluice == xi.questStatus.QUEST_AVAILABLE and
-        player:getFameLevel(xi.fameArea.SANDORIA) >= 3
+        player:getFameLevel(xi.quest.fame_area.SANDORIA) >= 3
     then
         player:startEvent(57)
-    elseif
-        troubleAtTheSluice == xi.questStatus.QUEST_ACCEPTED and
-        not hasNeutralizerKI
-    then
+    elseif troubleAtTheSluice == xi.questStatus.QUEST_ACCEPTED and not hasNeutralizerKI then
         player:startEvent(55)
     elseif hasNeutralizerKI then
         player:startEvent(56)
@@ -47,7 +44,7 @@ entity.onEventFinish = function(player, csid, option, npc)
             player:delKeyItem(xi.ki.NEUTRALIZER)
             player:addItem(xi.item.HEAVY_AXE)
             player:messageSpecial(ID.text.ITEM_OBTAINED, xi.item.HEAVY_AXE) -- Heavy Axe
-            player:addFame(xi.fameArea.SANDORIA, 30)
+            player:addFame(xi.quest.fame_area.SANDORIA, 30)
             player:completeQuest(xi.questLog.SANDORIA, xi.quest.id.sandoria.TROUBLE_AT_THE_SLUICE)
         end
     end

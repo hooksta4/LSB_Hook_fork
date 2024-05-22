@@ -37,10 +37,7 @@ entity.onTrigger = function(player, npc)
         not player:needToZone()
     then
         player:startEvent(135) -- Start Quest "I'll Take the Big Box"
-    elseif
-        illTakeTheBigBox == xi.questStatus.QUEST_COMPLETED and
-        trueWill == xi.questStatus.QUEST_AVAILABLE
-    then
+    elseif illTakeTheBigBox == xi.questStatus.QUEST_COMPLETED and trueWill == xi.questStatus.QUEST_AVAILABLE then
         player:startEvent(136) -- Start Quest "True Will"
     elseif
         player:hasKeyItem(xi.ki.OLD_TRICK_BOX) and
@@ -67,7 +64,7 @@ entity.onEventFinish = function(player, csid, option, npc)
             player:messageSpecial(ID.text.ITEM_OBTAINED, xi.item.ZUSHIO) -- Zushio
             player:needToZone()
             player:setCharVar('twentyInPirateYearsCS', 0)
-            player:addFame(xi.fameArea.NORG, 30)
+            player:addFame(xi.quest.fame_area.NORG, 30)
             player:completeQuest(xi.questLog.OUTLANDS, xi.quest.id.outlands.TWENTY_IN_PIRATE_YEARS)
         end
     elseif csid == 135 then

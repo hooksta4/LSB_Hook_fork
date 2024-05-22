@@ -10,7 +10,7 @@ local quest = Quest:new(xi.questLog.BASTOK, xi.quest.id.bastok.BRYGID_THE_STYLIS
 quest.reward =
 {
     fame     = 30,
-    fameArea = xi.fameArea.BASTOK,
+    fameArea = xi.quest.fame_area.BASTOK,
     title    = xi.title.BASTOKS_SECOND_BEST_DRESSED,
 }
 

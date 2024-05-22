@@ -14,7 +14,7 @@ local quest = Quest:new(xi.questLog.BASTOK, xi.quest.id.bastok.THE_TALEKEEPERS_T
 quest.reward =
 {
     fame     = 40,
-    fameArea = xi.fameArea.BASTOK,
+    fameArea = xi.quest.fame_area.BASTOK,
     item     = xi.item.FIGHTERS_CALLIGAE,
 }
 
@@ -25,7 +25,7 @@ quest.sections =
             return status == xi.questStatus.QUEST_AVAILABLE and
                 player:hasCompletedQuest(xi.questLog.BASTOK, xi.quest.id.bastok.THE_DOORMAN) and
                 player:getMainJob() == xi.job.WAR and
-                player:getMainLvl() >= xi.settings.main.AF2_QUEST_LEVEL
+                player:getMainLvl() >= 50
         end,
 
         [xi.zone.BASTOK_MINES] =

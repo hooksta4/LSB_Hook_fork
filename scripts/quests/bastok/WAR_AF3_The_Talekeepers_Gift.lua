@@ -14,7 +14,7 @@ local quest = Quest:new(xi.questLog.BASTOK, xi.quest.id.bastok.THE_TALEKEEPERS_G
 quest.reward =
 {
     fame     = 60,
-    fameArea = xi.fameArea.BASTOK,
+    fameArea = xi.quest.fame_area.BASTOK,
     item     = xi.item.FIGHTERS_LORICA,
     title    = xi.title.PARAGON_OF_WARRIOR_EXCELLENCE,
 }
@@ -26,7 +26,6 @@ quest.sections =
             return status == xi.questStatus.QUEST_AVAILABLE and
                 player:hasCompletedQuest(xi.questLog.BASTOK, xi.quest.id.bastok.THE_TALEKEEPERS_TRUTH) and
                 player:getMainJob() == xi.job.WAR and
-                player:getMainLvl() >= xi.settings.main.AF3_QUEST_LEVEL and
                 quest:getVar(player, 'Timer') <= VanadielUniqueDay() and
                 not quest:getMustZone(player)
         end,

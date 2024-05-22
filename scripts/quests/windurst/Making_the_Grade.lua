@@ -12,7 +12,7 @@ local quest = Quest:new(xi.questLog.WINDURST, xi.quest.id.windurst.MAKING_THE_GR
 quest.reward =
 {
     fame     = 75,
-    fameArea = xi.fameArea.WINDURST,
+    fameArea = xi.quest.fame_area.WINDURST,
     item     = xi.item.SCROLL_OF_ASPIR,
 }
 
@@ -23,7 +23,7 @@ quest.sections =
             return status == xi.questStatus.QUEST_AVAILABLE and
                 player:hasCompletedQuest(xi.questLog.WINDURST, xi.quest.id.windurst.TEACHERS_PET) and
                 player:getQuestStatus(xi.questLog.WINDURST, xi.quest.id.windurst.LET_SLEEPING_DOGS_LIE) ~= xi.questStatus.QUEST_ACCEPTED and
-                player:getFameLevel(xi.fameArea.WINDURST) >= 3
+                player:getFameLevel(xi.quest.fame_area.WINDURST) >= 3
         end,
 
         [xi.zone.WINDURST_WATERS] =

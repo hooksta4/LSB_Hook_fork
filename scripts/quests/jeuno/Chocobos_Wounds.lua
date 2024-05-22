@@ -13,7 +13,7 @@ local quest = Quest:new(xi.questLog.JEUNO, xi.quest.id.jeuno.CHOCOBOS_WOUNDS)
 quest.reward =
 {
     fame = 30,
-    fameArea = xi.fameArea.JEUNO,
+    fameArea = xi.quest.fame_area.JEUNO,
     keyItem = xi.ki.CHOCOBO_LICENSE,
     title = xi.title.CHOCOBO_TRAINER,
 }
@@ -72,10 +72,8 @@ quest.sections =
                     if option == 1 then
                         quest:begin(player)
                         quest:setVar(player, 'Prog', 1)
-                        if xi.settings.main.ENABLE_TOAU == 1 then
-                            -- This quest is automatically flagged during this interaction.
-                            player:addQuest(xi.questLog.JEUNO, xi.quest.id.jeuno.CHOCOBO_ON_THE_LOOSE)
-                        end
+                        -- This quest is automatically flagged during this interaction.
+                        player:addQuest(xi.questLog.JEUNO, xi.quest.id.jeuno.CHOCOBO_ON_THE_LOOSE)
                     else
                         -- Dialogue changes if the player fails to choose the correct option.
                         quest:setVar(player, 'Declined', 1)

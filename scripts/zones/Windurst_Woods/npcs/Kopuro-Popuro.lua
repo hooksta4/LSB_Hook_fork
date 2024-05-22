@@ -29,10 +29,7 @@ entity.onTrade = function(player, npc, trade)
         end
 
     -- THE ALL NEW C-3000
-    elseif
-        allNewC3000 == xi.questStatus.QUEST_ACCEPTED or
-        allNewC3000 == xi.questStatus.QUEST_COMPLETED
-    then
+    elseif allNewC3000 == xi.questStatus.QUEST_ACCEPTED or allNewC3000 == xi.questStatus.QUEST_COMPLETED then
         if npcUtil.tradeHas(trade, { 889, 939 }) then
             player:startEvent(657, 0, 889, 939) -- Correct items given, complete quest in onEventUpdate
         else
@@ -52,7 +49,7 @@ entity.onTrigger = function(player, npc)
     if
         legendaryPlanB == xi.questStatus.QUEST_COMPLETED and
         allNewC3000 == xi.questStatus.QUEST_AVAILABLE and
-        player:getFameLevel(xi.fameArea.WINDURST) >= 4
+        player:getFameLevel(xi.quest.fame_area.WINDURST) >= 4
     then
         if player:needToZone() then
             player:startEvent(316) -- Post quest text from legendaryPlanB
@@ -63,17 +60,14 @@ entity.onTrigger = function(player, npc)
         player:startEvent(659, 0, 889, 939)
 
     -- A GREETING CARDIAN
-    elseif
-        aGreetingCardian == xi.questStatus.QUEST_ACCEPTED and
-        aGreetingCardianCS == 5
-    then
+    elseif aGreetingCardian == xi.questStatus.QUEST_ACCEPTED and aGreetingCardianCS == 5 then
         player:startEvent(301) -- Supplemental text when aGreetingCardian in progress, right before completion
 
     -- LEGENDARY PLAN B
     elseif
         aGreetingCardian == xi.questStatus.QUEST_COMPLETED and
         legendaryPlanB == xi.questStatus.QUEST_AVAILABLE and
-        player:getFameLevel(xi.fameArea.WINDURST) >= 3
+        player:getFameLevel(xi.quest.fame_area.WINDURST) >= 3
     then
         if player:needToZone() then
             player:startEvent(306) -- Supplemental text for aGreetingCardian before start of legendaryPlanB
@@ -108,7 +102,7 @@ entity.onEventFinish = function(player, csid, option, npc)
         player:addQuest(xi.questLog.WINDURST, xi.quest.id.windurst.THE_ALL_NEW_C_2000)
     elseif csid == 292 then
         player:completeQuest(xi.questLog.WINDURST, xi.quest.id.windurst.THE_ALL_NEW_C_2000)
-        player:addFame(xi.fameArea.WINDURST, 80)
+        player:addFame(xi.quest.fame_area.WINDURST, 80)
         player:addTitle(xi.title.CARDIAN_TUTOR)
         player:addGil(xi.settings.main.GIL_RATE * 200)
         player:confirmTrade()

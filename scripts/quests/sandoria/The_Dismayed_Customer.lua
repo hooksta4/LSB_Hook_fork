@@ -13,7 +13,7 @@ local quest = Quest:new(xi.questLog.SANDORIA, xi.quest.id.sandoria.THE_DISMAYED_
 quest.reward =
 {
     fame = 30,
-    fameArea = xi.fameArea.SANDORIA,
+    fameArea = xi.quest.fame_area.SANDORIA,
     gil = 560,
     title = xi.title.LOST_FOUND_OFFICER,
 }

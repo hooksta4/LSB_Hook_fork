@@ -48,7 +48,7 @@ quest.sections =
             {
                 onTrigger = function(player, csid, option, npc)
                     if quest:getVar(player, 'Prog') == 0 then
-                        return quest:progressEvent(536)
+                        return quest:event(536)
                     end
                 end,
             },
@@ -115,7 +115,7 @@ quest.sections =
 
                     -- Clicking on the ??? after killing NM
                     elseif progressVar == 4 then
-                        return quest:progressEvent(558)
+                        return quest:event(558)
                     end
                 end,
             },
@@ -174,6 +174,7 @@ quest.sections =
                     quest:complete(player)
                 end,
             },
+
         }
     },
 
@@ -189,7 +190,7 @@ quest.sections =
             ['Fyi_Chalmwoh'] =
             {
                 onTrigger = function(player, csid, option, npc)
-                    return quest:progressEvent(321, { [1] = xi.mannequin.getMannequins(player),
+                    return quest:event(321, { [1] = xi.mannequin.getMannequins(player),
                         [2] = xi.mannequin.cost.PURCHASE,
                         [3] = xi.mannequin.cost.TRADE,
                         [4] = xi.mannequin.cost.POSE,

@@ -30,10 +30,7 @@ entity.onTrigger = function(player, npc)
         player:startEvent(32) -- During quest 'Under the sea' - 1st dialog
     elseif player:hasKeyItem(xi.ki.ETCHED_RING) then
         player:startEvent(37) -- Finish quest 'Under the sea'
-    elseif
-        underTheSea == xi.questStatus.QUEST_COMPLETED and
-        theSandCharm == xi.questStatus.QUEST_AVAILABLE
-    then
+    elseif underTheSea == xi.questStatus.QUEST_COMPLETED and theSandCharm == xi.questStatus.QUEST_AVAILABLE then
         player:startEvent(38) -- New dialog after 'Under the sea'
     elseif
         underTheSea == xi.questStatus.QUEST_COMPLETED and
@@ -43,10 +40,7 @@ entity.onTrigger = function(player, npc)
         player:startEvent(70, xi.item.DANCESHROOM) -- Start quest 'The gift'
     elseif theGift == xi.questStatus.QUEST_ACCEPTED then
         player:startEvent(71) -- During quest 'The gift'
-    elseif
-        theGift == xi.questStatus.QUEST_COMPLETED and
-        theSandCharm == xi.questStatus.QUEST_ACCEPTED
-    then
+    elseif theGift == xi.questStatus.QUEST_COMPLETED and theSandCharm == xi.questStatus.QUEST_ACCEPTED then
         player:startEvent(78) -- New dialog after 'The gift'
     elseif
         theGift == xi.questStatus.QUEST_COMPLETED and
@@ -71,21 +65,21 @@ entity.onEventFinish = function(player, csid, option, npc)
         player:setCharVar('underTheSeaVar', 2)
     elseif
         csid == 37 and
-        npcUtil.completeQuest(player, xi.questLog.OTHER_AREAS, xi.quest.id.otherAreas.UNDER_THE_SEA, { item = 13335, fame_area = xi.fameArea.SELBINA_RABAO, title = xi.title.LIL_CUPID, var = 'underTheSeaVar' })
+        npcUtil.completeQuest(player, xi.questLog.OTHER_AREAS, xi.quest.id.otherAreas.UNDER_THE_SEA, { item = 13335, fame_area = xi.quest.fame_area.SELBINA_RABAO, title = xi.title.LIL_CUPID, var = 'underTheSeaVar' })
     then
         player:delKeyItem(xi.ki.ETCHED_RING)
     elseif csid == 70 and option == 50 then
         player:addQuest(xi.questLog.OTHER_AREAS, xi.quest.id.otherAreas.THE_GIFT)
     elseif
         csid == 72 and
-        npcUtil.completeQuest(player, xi.questLog.OTHER_AREAS, xi.quest.id.otherAreas.THE_GIFT, { item = 16497, fame_area = xi.fameArea.SELBINA_RABAO, title = xi.title.SAVIOR_OF_LOVE })
+        npcUtil.completeQuest(player, xi.questLog.OTHER_AREAS, xi.quest.id.otherAreas.THE_GIFT, { item = 16497, fame_area = xi.quest.fame_area.SELBINA_RABAO, title = xi.title.SAVIOR_OF_LOVE })
     then
         player:confirmTrade()
     elseif csid == 73 and option == 50 then
         player:addQuest(xi.questLog.OTHER_AREAS, xi.quest.id.otherAreas.THE_REAL_GIFT)
     elseif
         csid == 75 and
-        npcUtil.completeQuest(player, xi.questLog.OTHER_AREAS, xi.quest.id.otherAreas.THE_REAL_GIFT, { item = 17385, fame_area = xi.fameArea.SELBINA_RABAO, title = xi.title.THE_LOVE_DOCTOR })
+        npcUtil.completeQuest(player, xi.questLog.OTHER_AREAS, xi.quest.id.otherAreas.THE_REAL_GIFT, { item = 17385, fame_area = xi.quest.fame_area.SELBINA_RABAO, title = xi.title.THE_LOVE_DOCTOR })
     then
         player:confirmTrade()
     end

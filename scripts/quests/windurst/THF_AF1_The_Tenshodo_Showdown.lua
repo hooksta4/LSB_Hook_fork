@@ -12,7 +12,7 @@ local quest = Quest:new(xi.questLog.WINDURST, xi.quest.id.windurst.THE_TENSHODO_
 quest.reward =
 {
     fame = 30,
-    fameArea = xi.fameArea.WINDURST,
+    fameArea = xi.quest.fame_area.WINDURST,
     item = xi.item.MARAUDERS_KNIFE,
 }
 

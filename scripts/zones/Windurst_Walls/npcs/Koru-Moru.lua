@@ -54,20 +54,11 @@ entity.onTrigger = function(player, npc)
         carbuncleDebacleProgress == 2
     then
         player:startEvent(416) -- go and see Ripapa
-    elseif
-        carbuncleDebacle == xi.questStatus.QUEST_ACCEPTED and
-        carbuncleDebacleProgress == 4
-    then
+    elseif carbuncleDebacle == xi.questStatus.QUEST_ACCEPTED and carbuncleDebacleProgress == 4 then
         player:startEvent(417) -- now go and see Agado-Pugado
-    elseif
-        carbuncleDebacle == xi.questStatus.QUEST_ACCEPTED and
-        carbuncleDebacleProgress == 5
-    then
+    elseif carbuncleDebacle == xi.questStatus.QUEST_ACCEPTED and carbuncleDebacleProgress == 5 then
         player:startEvent(418) -- Uran-Mafran must be stopped
-    elseif
-        carbuncleDebacle == xi.questStatus.QUEST_ACCEPTED and
-        carbuncleDebacleProgress == 7
-    then
+    elseif carbuncleDebacle == xi.questStatus.QUEST_ACCEPTED and carbuncleDebacleProgress == 7 then
         player:startEvent(419) -- ending cs
     elseif
         thePuppetMaster == xi.questStatus.QUEST_COMPLETED and
@@ -77,15 +68,9 @@ entity.onTrigger = function(player, npc)
         player:startEvent(420) -- new cs after all 3 SMN AFs done
     -----------------------------------
     -- Class Reunion
-    elseif
-        classReunion == xi.questStatus.QUEST_ACCEPTED and
-        classReunionProgress == 1
-    then
+    elseif classReunion == xi.questStatus.QUEST_ACCEPTED and classReunionProgress == 1 then
         player:startEvent(412, 0, 450, xi.item.ASTRAGALOS, 0, 0, 0, 0, 0) -- bring Koru 4 astragaloi
-    elseif
-        classReunion == xi.questStatus.QUEST_ACCEPTED and
-        classReunionProgress == 2
-    then
+    elseif classReunion == xi.questStatus.QUEST_ACCEPTED and classReunionProgress == 2 then
         player:startEvent(414, 0, 0, xi.item.ASTRAGALOS, 0, 0, 0, 0, 0) -- reminder to bring 4 astragaloi
     elseif
         classReunion == xi.questStatus.QUEST_ACCEPTED and
@@ -100,16 +85,10 @@ entity.onTrigger = function(player, npc)
         talk2 == 1
     then
             player:startEvent(410) -- ending cs
-    elseif
-        thePuppetMaster == xi.questStatus.QUEST_COMPLETED and
-        classReunion == xi.questStatus.QUEST_COMPLETED
-    then
+    elseif thePuppetMaster == xi.questStatus.QUEST_COMPLETED and classReunion == xi.questStatus.QUEST_COMPLETED then
         player:startEvent(411) -- new cs after completed AF2
     -----------------------------------
-    elseif
-        rootProblem == xi.questStatus.QUEST_ACCEPTED and
-        player:getCharVar('rootProblem') == 1
-    then
+    elseif rootProblem == xi.questStatus.QUEST_ACCEPTED and player:getCharVar('rootProblem') == 1 then
         player:startEvent(348, 0, xi.item.SQUARE_OF_SILK_CLOTH)
     end
 end
@@ -133,7 +112,7 @@ entity.onEventFinish = function(player, csid, option, npc)
             player:setCharVar('ClassReunion_TalkedToFurakku', 0)
             player:setCharVar('ClassReunion_TalkedToFupepe', 0)
             player:needToZone(true)
-            player:addFame(xi.fameArea.WINDURST, 40)
+            player:addFame(xi.quest.fame_area.WINDURST, 40)
         else
             player:messageSpecial(ID.text.ITEM_CANNOT_BE_OBTAINED, xi.item.EVOKERS_SPATS)
         end
@@ -149,7 +128,7 @@ entity.onEventFinish = function(player, csid, option, npc)
             player:messageSpecial(ID.text.ITEM_OBTAINED, xi.item.EVOKERS_HORN)
             player:addTitle(xi.title.PARAGON_OF_SUMMONER_EXCELLENCE)
             player:completeQuest(xi.questLog.WINDURST, xi.quest.id.windurst.CARBUNCLE_DEBACLE)
-            player:addFame(xi.fameArea.WINDURST, 60)
+            player:addFame(xi.quest.fame_area.WINDURST, 60)
             player:setCharVar('CarbuncleDebacleProgress', 0)
             player:needToZone(true)
         else

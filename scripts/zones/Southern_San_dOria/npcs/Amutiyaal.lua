@@ -55,10 +55,7 @@ entity.onTrigger = function(player, npc)
     local lureSandy = player:getQuestStatus(xi.questLog.SANDORIA, xi.quest.id.sandoria.LURE_OF_THE_WILDCAT)
     local wildcatSandy = player:getCharVar('WildcatSandy')
 
-    if
-        lureSandy ~= xi.questStatus.QUEST_COMPLETED and
-        xi.settings.main.ENABLE_TOAU == 1
-    then
+    if lureSandy ~= xi.questStatus.QUEST_COMPLETED and xi.settings.main.ENABLE_TOAU == 1 then
         if lureSandy == xi.questStatus.QUEST_AVAILABLE then
             player:startEvent(812)
         else
@@ -88,7 +85,7 @@ entity.onEventFinish = function(player, csid, option, npc)
         player:messageSpecial(ID.text.KEYITEM_OBTAINED, xi.ki.RED_SENTINEL_BADGE)
     elseif csid == 815 then
         player:completeQuest(xi.questLog.SANDORIA, xi.quest.id.sandoria.LURE_OF_THE_WILDCAT)
-        player:addFame(xi.fameArea.SANDORIA, 150)
+        player:addFame(xi.quest.fame_area.SANDORIA, 150)
         player:setCharVar('WildcatSandy', 0)
         player:delKeyItem(xi.ki.RED_SENTINEL_BADGE)
         player:addKeyItem(xi.ki.RED_INVITATION_CARD)

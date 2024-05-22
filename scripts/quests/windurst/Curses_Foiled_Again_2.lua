@@ -10,7 +10,7 @@ local quest = Quest:new(xi.questLog.WINDURST, xi.quest.id.windurst.CURSES_FOILED
 quest.reward =
 {
     fame     = 90,
-    fameArea = xi.fameArea.WINDURST,
+    fameArea = xi.quest.fame_area.WINDURST,
     item     = xi.item.MISERY_STAFF,
     title    = xi.title.HEXER_VEXER,
 }
@@ -21,7 +21,7 @@ quest.sections =
         check = function(player, status, vars)
             return status == xi.questStatus.QUEST_AVAILABLE and
                 player:hasCompletedQuest(xi.questLog.WINDURST, xi.quest.id.windurst.CURSES_FOILED_AGAIN_1) and
-                player:getFameLevel(xi.fameArea.WINDURST) >= 2
+                player:getFameLevel(xi.quest.fame_area.WINDURST) >= 2
         end,
 
         [xi.zone.WINDURST_WALLS] =

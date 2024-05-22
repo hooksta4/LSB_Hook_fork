@@ -13,7 +13,7 @@ local quest = Quest:new(xi.questLog.OUTLANDS, xi.quest.id.outlands.A_THIEF_IN_NO
 quest.reward =
 {
     fame = 60,
-    fameArea = xi.fameArea.NORG,
+    fameArea = xi.quest.fame_area.NORG,
     item = xi.item.MYOCHIN_KABUTO,
     title = xi.title.PARAGON_OF_SAMURAI_EXCELLENCE,
 }
@@ -202,7 +202,7 @@ quest.sections =
                 end,
 
                 [32001] = function(player, csid, option, npc)
-                    if player:getLocalVar('battlefieldWin') == xi.battlefield.id.THIEF_IN_NORG then
+                    if player:getLocalVar('battlefieldWin') == 68 then
                         npcUtil.giveKeyItem(player, xi.ki.CHARRED_HELM)
                         quest:setVar(player, 'Prog', 7)
                     end

@@ -41,10 +41,7 @@ entity.onTrigger = function(player, npc)
         (trustSandoria == xi.questStatus.QUEST_COMPLETED or trustBastok == xi.questStatus.QUEST_COMPLETED)
     then
         player:startEvent(439, 0, 0, 0, trustMemory(player), 0, 0, 0, rank3)
-    elseif
-        trustWindurst == xi.questStatus.QUEST_ACCEPTED and
-        windurstFirstTrust == 0
-    then
+    elseif trustWindurst == xi.questStatus.QUEST_ACCEPTED and windurstFirstTrust == 0 then
         player:startEvent(435, 0, 0, 0, trustMemory(player), 0, 0, 0, rank3)
     elseif
         trustWindurst == xi.questStatus.QUEST_ACCEPTED and
@@ -53,10 +50,7 @@ entity.onTrigger = function(player, npc)
     then
         player:startEvent(436)
         player:setLocalVar('KupipiTrustChatFlag', 1)
-    elseif
-        trustWindurst == xi.questStatus.QUEST_ACCEPTED and
-        windurstFirstTrust == 2
-    then
+    elseif trustWindurst == xi.questStatus.QUEST_ACCEPTED and windurstFirstTrust == 2 then
         player:startEvent(437)
     elseif
         trustWindurst == xi.questStatus.QUEST_COMPLETED and

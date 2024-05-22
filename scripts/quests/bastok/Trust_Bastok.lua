@@ -161,18 +161,9 @@ quest.sections =
                     local trustSandoria = player:getQuestStatus(xi.questLog.SANDORIA, xi.quest.id.sandoria.TRUST_SANDORIA)
                     local trustWindurst = player:getQuestStatus(xi.questLog.WINDURST, xi.quest.id.windurst.TRUST_WINDURST)
 
-                    -- Haven't started any other trust tutorial quest.
-                    if
-                        trustWindurst == xi.questStatus.QUEST_AVAILABLE and
-                        trustSandoria == xi.questStatus.QUEST_AVAILABLE
-                    then
+                    if trustWindurst == xi.questStatus.QUEST_AVAILABLE and trustSandoria == xi.questStatus.QUEST_AVAILABLE then
                         return quest:progressEvent(434)
-
-                    -- Has finished other trust quest.
-                    elseif
-                        trustWindurst == xi.questStatus.QUEST_COMPLETED or
-                        trustSandoria == xi.questStatus.QUEST_COMPLETED
-                    then
+                    elseif trustWindurst == xi.questStatus.QUEST_COMPLETED or trustSandoria == xi.questStatus.QUEST_COMPLETED then
                         return quest:progressEvent(438)
                     end
                 end,

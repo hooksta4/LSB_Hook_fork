@@ -10,7 +10,7 @@ local quest = Quest:new(xi.questLog.SANDORIA, xi.quest.id.sandoria.THE_GENERALS_
 quest.reward =
 {
     fame = 30,
-    fameArea = xi.fameArea.SANDORIA,
+    fameArea = xi.quest.fame_area.SANDORIA,
     item = xi.item.LYNX_BAGHNAKHS,
 }
 
@@ -18,7 +18,7 @@ quest.sections =
 {
     {
         check = function(player, status)
-            return status == xi.questStatus.QUEST_AVAILABLE and player:getFameLevel(xi.fameArea.SANDORIA) > 1
+            return status == xi.questStatus.QUEST_AVAILABLE and player:getFameLevel(xi.quest.fame_area.SANDORIA) > 1
         end,
 
         [xi.zone.CHATEAU_DORAGUILLE] =

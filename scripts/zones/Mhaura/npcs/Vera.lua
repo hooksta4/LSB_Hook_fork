@@ -11,10 +11,7 @@ local entity = {}
 entity.onTrade = function(player, npc, trade)
     local questStatus = player:getQuestStatus(xi.questLog.OTHER_AREAS, xi.quest.id.otherAreas.THE_OLD_LADY)
 
-    if
-        questStatus == xi.questStatus.QUEST_ACCEPTED and
-        trade:getItemCount() == 1
-    then
+    if questStatus == xi.questStatus.QUEST_ACCEPTED and trade:getItemCount() == 1 then
         local veraOldLadyVar = player:getCharVar('VeraOldLadyVar')
 
         if
