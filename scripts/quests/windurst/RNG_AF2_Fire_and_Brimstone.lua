@@ -200,7 +200,7 @@ quest.sections =
                     if player:getQuestStatus(xi.questLog.WINDURST, xi.quest.id.windurst.UNBRIDLED_PASSION) == xi.questStatus.QUEST_AVAILABLE then
                         return quest:progressEvent(539):replaceDefault()
                     end
-                end,
+                end
             },
         },
     },
