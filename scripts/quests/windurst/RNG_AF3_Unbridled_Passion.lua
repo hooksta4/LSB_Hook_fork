@@ -9,7 +9,7 @@
 -----------------------------------
 local ID = zones[xi.zone.XARCABARD]
 -----------------------------------
-local quest = Quest:new(xi.quest.log_id.WINDURST, xi.quest.id.windurst.UNBRIDLED_PASSION)
+local quest = Quest:new(xi.questLog.WINDURST, xi.quest.id.windurst.UNBRIDLED_PASSION)
 
 quest.reward =
 {
